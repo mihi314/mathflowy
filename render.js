@@ -1,63 +1,23 @@
-jQuery.fn.styleEditArea = function() {
+var oldBlurHandler = jQuery.fn.blurHandler;
+jQuery.fn.blurHandler = function() {
+    oldBlurHandler(this);
     $(this).each(function() {
-        var b = $(this), c = b.hasClass("fixed"), e = b.getContentTarget(), d = b.children("textarea"), k = e == undefined ? null : e.getProject();
-        if (e == undefined || !e.contentIsEditable()) {
-            IS_MOBILE ? b.hideEditor(true) : b.hideEditor();
-            c && tagging.getTagAutocompleter().detach()
-        } else {
-            if (projecttree.getProjectReferenceFromDomProject(k).isReadOnly()) {
-                k = e.getLastSavedContentText();
-                d.val() !== k && d.val(k)
-            }
-            b.css("display", "block");
-            k = textToHtml(d.val());
-            if (e.isNote(true))
-                k += "<div class='spacer'>.</div>";
-            e.setContentHtml(k);
+        var b = $(this)
+          , p = b.getProject()
+          , j = b.isNote()
+          , d = getCurrentlyFocusedContent();
+        k = b.text();
 
-            // TODO: there's gotta be a faster way to do this
-            if (((k.indexOf("\\(") > -1) && (k.indexOf("\\)") > -1)) ||
-                ((k.indexOf("\\[") > -1) && (k.indexOf("\\]") > -1))
-               ) {
-                MathJax.Hub.Queue(["Typeset", MathJax.Hub, e.get()]);
-            }
-
-            k = e.outerHeight() + 2;
-            if (c && !IS_ANDROID)
-                k += parseInt(e.css("lineHeight"));
-            b.height(k);
-            k = e.offset();
-            IS_MOBILE || b.css({top: 0,left: 0});
-            b.offset(k);
-            e = e.outerWidth();
-            if (IS_IOS)
-                e -= 4;
-            else if (IS_ANDROID)
-                e -= 10;
-            else if (IS_IE)
-                e += 4;
-            if (IS_FIREFOX)
-                e += 2;
-            b.width(e);
-            c && tagging.getTagAutocompleter().updateDisplay(d)
+        if (((k.indexOf("\\(") > -1) && (k.indexOf("\\)") > -1)) ||
+            ((k.indexOf("\\[") > -1) && (k.indexOf("\\]") > -1))
+           ) {
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub, b.get()]);
         }
     });
     return this
 };
 
-function htmlToText(b) {
-    b.find(".contentMatch").each(function() {
-        $(this).replaceWith($(this).html())
-    });
-
-    b.children(".contentLink").each(function() {
-        $(this).replaceWith($(this).html())
-    });
-
-    b.children(".contentTag").each(function() {
-        $(this).replaceWith($(this).find(".contentTagClickable").attr("data-tag"))
-    });
-
+function mathjaxHtmlToText(b) {
     b.children(".MathJax_Preview").remove();
     b.children(".MathJax_Display").remove();
     b.children(".MathJax").remove();
@@ -73,9 +33,39 @@ function htmlToText(b) {
     return b.html().replace(/&lt;/ig, "<").replace(/&gt;/ig, ">").replace(/&nbsp;/ig, "\u00a0").replace(/&amp;/ig, "&");
 }
 
-jQuery.fn.keyboardExpandToggle = function() {
-    var b = $(this).getProject();
-    b.is(".selected") ? b.expandOrCollapseAllDescendantsOfProjectToggle() : b.clickExpandButton(true);
-    MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
-    return this
+var oldFocusHandler = jQuery.fn.focusHandler;
+jQuery.fn.focusHandler = function() {
+    oldFocusHandler(this);
+    if ($(this).html().indexOf("MathJax") != -1) {
+        mathjaxHtmlToText(this);
+    }
+}
+
+/* Typeset after (new) content is loaded. */
+var oldReadyfunction = documentReadyFunc;
+var documentReadyFunc = function() {
+    oldReadyfunction();
+    if (READY_FOR_DOCUMENT_READY) {
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+    }
 };
+$(document).ready(documentReadyFunc);
+
+jQuery.fn.oldSetExpanded = jQuery.fn.setExpanded;
+jQuery.fn.setExpanded = function(b) {
+    $(this).oldSetExpanded(b);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+}
+
+jQuery.fn.oldSelectIt = jQuery.fn.selectIt;
+jQuery.fn.selectIt = function(b, e) {
+    $(this).oldSelectIt(b, e);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+}
+
+var oldRefreshVisibleChildrenUnderSelectedForAddButton = refreshVisibleChildrenUnderSelectedForAddButton;
+var refreshVisibleChildrenUnderSelectedForAddButton = function(b) {
+    oldRefreshVisibleChildrenUnderSelectedForAddButton(b);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+}
+
