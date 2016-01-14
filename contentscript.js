@@ -5,7 +5,8 @@ var s = document.createElement('script');
 s.type = "text/x-mathjax-config";
 s.text = 'MathJax.Hub.Config({\
       tex2jax: {\
-        displayMath: [ ["\\\\[","\\\\]"] ],\
+        inlineMath: [ [\"\\\\(\",\"\\\\)\"], [\"$\", \"$\"] ],\
+        displayMath: [ [\"\\\\[\",\"\\\\]\"], [\"$$\", \"$$\"] ],\
       }\
   });';
 (document.head||document.documentElement).appendChild(s);

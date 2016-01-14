@@ -8,7 +8,8 @@ jQuery.fn.blurHandler = function() {
           , d = getCurrentlyFocusedContent();
         k = b.text();
 
-        if (((k.indexOf("\\(") > -1) && (k.indexOf("\\)") > -1)) ||
+        if (k.indexOf("$") > -1 ||
+            ((k.indexOf("\\(") > -1) && (k.indexOf("\\)") > -1)) ||
             ((k.indexOf("\\[") > -1) && (k.indexOf("\\]") > -1))
            ) {
             MathJax.Hub.Queue(["Typeset", MathJax.Hub, b.get()]);
