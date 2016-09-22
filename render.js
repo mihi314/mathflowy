@@ -1,6 +1,6 @@
 var oldBlurHandler = jQuery.fn.blurHandler;
 jQuery.fn.blurHandler = function() {
-    oldBlurHandler(this);
+    oldBlurHandler.apply(this, arguments);
     $(this).each(function() {
         var b = $(this)
           , p = b.getProject()
@@ -15,7 +15,7 @@ jQuery.fn.blurHandler = function() {
             MathJax.Hub.Queue(["Typeset", MathJax.Hub, b.get()]);
         }
     });
-    return this
+    return this;
 };
 
 function mathjaxHtmlToText(b) {
@@ -36,7 +36,7 @@ function mathjaxHtmlToText(b) {
 
 var oldFocusHandler = jQuery.fn.focusHandler;
 jQuery.fn.focusHandler = function() {
-    oldFocusHandler(this);
+    oldFocusHandler.apply(this, arguments);
     if ($(this).html().indexOf("MathJax") != -1) {
         mathjaxHtmlToText(this);
     }
