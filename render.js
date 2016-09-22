@@ -42,6 +42,17 @@ jQuery.fn.focusHandler = function() {
     }
 }
 
+var oldProjectIsMergeable = jQuery.fn.projectIsMergable;
+jQuery.fn.projectIsMergable = function(a) {
+    var is_mergeable = oldProjectIsMergeable.apply(this, arguments);
+    if (is_mergeable) {
+        if ($(this).html().indexOf("MathJax") != -1) {
+            mathjaxHtmlToText(this.getName().children(".content"));
+        }
+    }
+    return is_mergeable;
+}
+
 /* Typeset after (new) content is loaded. */
 var oldReadyfunction = documentReadyFunc;
 var documentReadyFunc = function() {
