@@ -53,6 +53,14 @@ jQuery.fn.projectIsMergable = function(a) {
     return is_mergeable;
 }
 
+var old_init = content_text.ContentText.prototype.init;
+content_text.ContentText.prototype.init = function(z, D) {
+    if (z.html && z.html().indexOf("MathJax") != -1) {
+        mathjaxHtmlToText(z);
+    }
+    return old_init.apply(this, arguments);
+};
+
 /* Typeset after (new) content is loaded. */
 var oldReadyfunction = documentReadyFunc;
 var documentReadyFunc = function() {
