@@ -1,7 +1,7 @@
 {
   "name": "Mathflowy: TeX equations for Workflowy",
   "short_name": "Mathflowy",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "manifest_version": 2,
 
   "description": "Render TeX / LaTeX math equations in Workflowy with MathJax.",
@@ -13,5 +13,14 @@
 
   "content_scripts": [ { "matches": ["https://workflowy.com/*"], "js": ["contentscript.js"], "run_at": "document_end" } ],
 
-  "web_accessible_resources": [ "render.js" ]
+  "web_accessible_resources": [ "render.js" ],
+
+  "permissions": [
+    "storage"
+  ],
+
+  "options_ui": {
+    "page": "options.html",
+    "chrome_style": true
+  }
 }

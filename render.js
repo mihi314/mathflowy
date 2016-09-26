@@ -1,3 +1,7 @@
+var delimiters_inline = $(document.currentScript).data('delimiters_inline');
+var delimiters_display = $(document.currentScript).data('delimiters_display');
+var delimiters = delimiters_inline.concat(delimiters_display);
+
 var oldBlurHandler = jQuery.fn.blurHandler;
 jQuery.fn.blurHandler = function() {
     oldBlurHandler.apply(this, arguments);
@@ -8,10 +12,7 @@ jQuery.fn.blurHandler = function() {
           , d = getCurrentlyFocusedContent();
         k = b.text();
 
-        if (k.indexOf("$") > -1 ||
-            ((k.indexOf("\\(") > -1) && (k.indexOf("\\)") > -1)) ||
-            ((k.indexOf("\\[") > -1) && (k.indexOf("\\]") > -1))
-           ) {
+        if (delimiters.some(de => k.includes(de[0]) && k.includes(de[1]))) {
             MathJax.Hub.Queue(["Typeset", MathJax.Hub, b.get()]);
         }
     });
@@ -24,10 +25,10 @@ function mathjaxHtmlToText(b) {
     b.children(".MathJax").remove();
 
     b.find("script").each(function() {
-        if ($(this).attr("type") == "math/tex") {
-            $(this).replaceWith("\\(" + $(this).html() + "\\)") ;
-        } else if ($(this).attr("type") == "math/tex; mode=display") {
-            $(this).replaceWith("\\[" + $(this).html() + "\\]") ;
+        if ($(this).attr("type") == "math/tex" && delimiters_inline.length > 0) {
+            $(this).replaceWith(delimiters_inline[0][0] + $(this).html() + delimiters_inline[0][1]) ;
+        } else if ($(this).attr("type") == "math/tex; mode=display" && delimiters_display.length > 0) {
+            $(this).replaceWith(delimiters_display[0][0] + $(this).html() + delimiters_display[0][1]) ;
         }
     });
 
@@ -63,13 +64,12 @@ content_text.ContentText.prototype.init = function(z, D) {
 
 /* Typeset after (new) content is loaded. */
 var oldReadyfunction = documentReadyFunc;
-var documentReadyFunc = function() {
+$(document).ready(function() {
     oldReadyfunction();
     if (READY_FOR_DOCUMENT_READY) {
         MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
     }
-};
-$(document).ready(documentReadyFunc);
+});
 
 jQuery.fn.oldSetExpanded = jQuery.fn.setExpanded;
 jQuery.fn.setExpanded = function(b) {

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Mathflowy Options</title>
+  <style>
+    body: { padding: 10px; }
+  </style>
+</head>
+
+<body>
+  Delimiters:
+  <div>
+    <label>
+      <input type="checkbox" id="inline-("><code>\( \pi \)</code> for Inline
+    </label>
+  </div>
+  <div>
+    <label>
+      <input type="checkbox" id="inline-$"><code>$ \pi $</code> for Inline
+    </label>
+  </div>
+  <div>
+    <label>
+      <input type="checkbox" id="display-["><code>\[ \pi \]</code> for Display
+    </label>
+  </div>
+  <div>
+    <label>
+      <input type="checkbox" id="display-$$"><code>$$ \pi $$</code> for Display
+    </label>
+  </div>
+  <div>
+    <label>
+      <input type="checkbox" id="inline-custom"> Custom inline delimiters:
+    </label>
+    <input type="text" id="inline-custom-left" size="3">
+    <input type="text" id="inline-custom-right" size="3">
+  </div>
+  <div>
+    <label>
+      <input type="checkbox" id="display-custom"> Custom display delimiters:
+    </label>
+    <input type="text" id="display-custom-left" size="3">
+    <input type="text" id="display-custom-right" size="3">
+  </div>
+
+  <div id="message"></div>
+  <button id="save">OK</button>
+
+  <script src="options.js"></script>
+</body>
+</html>
