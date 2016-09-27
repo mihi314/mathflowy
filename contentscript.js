@@ -9,7 +9,12 @@ var option_delimiters = {
   "display-$$": ["$$", "$$"]
 }
 
-chrome.storage.sync.get({
+var storage = chrome.storage.local;
+if (chrome.storage.sync) {
+  storage = chrome.storage.sync;
+}
+
+storage.get({
   "inline-(": true,
   "inline-$": true,
   "display-[": true,

@@ -3,6 +3,11 @@ var checkbox_options = ['inline-(', 'inline-$', 'display-[', 'display-$$',
   'inline-custom', 'display-custom'];
 var text_options = ['inline-custom-left', 'inline-custom-right', 'display-custom-left', 'display-custom-right'];
 
+var storage = chrome.storage.local;
+if (chrome.storage.sync) {
+  storage = chrome.storage.sync;
+}
+
 function save_options() {
   prefs = {}
   for (var i = checkbox_options.length - 1; i >= 0; i--) {
@@ -11,7 +16,7 @@ function save_options() {
   for (var i = text_options.length - 1; i >= 0; i--) {
     prefs[text_options[i]] = document.getElementById(text_options[i]).value;
   }
-  chrome.storage.sync.set(prefs, function() {
+  storage.set(prefs, function() {
     // Update status to let user know options were saved.
     var message = document.getElementById('message');
     message.textContent = 'Options saved. Reload Workflowy tabs for changes to take effect.';
@@ -22,7 +27,7 @@ function save_options() {
 }
 
 function restore_options() {
-  chrome.storage.sync.get({
+  storage.get({
     "inline-(": true,
     "inline-$": true,
     "display-[": true,
