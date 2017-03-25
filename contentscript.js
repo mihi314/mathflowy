@@ -42,14 +42,15 @@ storage.get({
     delimiters_display.push([prefs["display-custom-left"], prefs["display-custom-right"]]);
   }
 
-  // 1. custom mathjax configuration
+  // 1. custom mathjax configuration + physics extension
   var s = document.createElement('script');
   s.type = "text/x-mathjax-config";
   s.text = 'MathJax.Hub.Config({\
         tex2jax: {\
           inlineMath: ' + JSON.stringify(delimiters_inline) + ',\
           displayMath: ' + JSON.stringify(delimiters_display) + ',\
-        }\
+        },\
+        extensions: ["[Contrib]/physics/physics.js"]\
     });';
   (document.head||document.documentElement).appendChild(s);
 
